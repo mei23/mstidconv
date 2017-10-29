@@ -56,7 +56,7 @@
 
 <div id="wrap">
     <h1>mstidconv</h1>
-    <p>Mastodon v2.0.0 以降のステータスIDを日時と相互変換します</p>
+    <p>Mastodon v2.0.0 以降のステータスIDを時刻と相互変換します</p>
     <div style="margin:1em 0em">
         <dl>
             <dt>ステータスID:</dt>
@@ -66,22 +66,22 @@
     </div>
 
     <div style="margin:1em 0em">
-        <button id="toDate" title="ステータスIDを日時に変換します">ID to Date↓</button>
-        <button id="toId" title="日時をステータスIDに変換します">Date to ID↑</button>
+        <button id="toDate" title="ステータスIDを時刻に変換します">IDを時刻に↓</button>
+        <button id="toId" title="時刻をステータスIDに変換します">時刻をIDに↑</button>
         <button id="goNow" title="現在時刻を設定して変換します">現在時刻</button>
     </div>
 
     <div style="margin:1em 0em">
         <dl>
-            <dt>日時(たぶん地方時):</dt>
+            <dt>時刻(たぶん地方時):</dt>
             <dd>
                 <input type="text" id="datePart" style="width:120px">
                 <input type="text" id="timePart" style="width:120px">
             </dd>
         </dl>
     </div>
-    <p>※ 厳密には IDから日時部分を抽出 と 日時からTimelineフィルタで使えるような値を生成 になる。<br>
-        そのため ID→日時→ID で元のステータスIDに回帰することはない。
+    <p>※ 厳密には IDから時刻部分を抽出 と 時刻からTimelineフィルタで使えるような値を生成 になる。<br>
+        そのため ID→時刻→ID で元のステータスIDに回帰するとは限らない。
     </p>
 </div>
 
