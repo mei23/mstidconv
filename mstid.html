@@ -87,7 +87,7 @@
 
 <script>
     var MstDateId = MstDateId || {};
-    (function(){
+    (function() {
 
         var B_16 = Math.pow(2, 16);
 
@@ -141,9 +141,9 @@
         }
     }());
 
-    (function(){
+    (function() {
 
-        var toDate = function(){
+        var toDate = function() {
             var id = $('#mstid').val();
             var dt = MstDateId.idToDate(id);
             $('#datePart').val(MstDateId.formatDate(dt, 'YYYY/mm/dd'));
@@ -152,7 +152,7 @@
             $('#idInHex').text(MstDateId.formatHex(id));
         };
 
-        var toId = function(){
+        var toId = function() {
             var dateStr =  $('#datePart').val() + ' ' + $('#timePart').val();
             var date = MstDateId.parseDate(dateStr);
             var id = MstDateId.dateToId(date);
@@ -160,12 +160,12 @@
             $('#idInHex').text(MstDateId.formatHex(id));
         };
 
-        var goNow = function(){
+        var goNow = function() {
             $('#mstid').val(MstDateId.dateToId(new Date()));
             toDate();
         };
 
-        $(function(){
+        $(function() {
             // fill initial values
             goNow();
 
@@ -186,7 +186,7 @@
             $('#datePart').datepicker({ showButtonPanel: true });
 
             // Play
-            //setInterval(function(){
+            //setInterval(function() {
             //    goNow();
             //}, 60)
         })
