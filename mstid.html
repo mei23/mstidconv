@@ -2,7 +2,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/i18n/jquery-ui-i18n.min.js"></script>
     <style>
         body {
             background: #121;
@@ -63,15 +66,18 @@
     </div>
 
     <div style="margin:1em 0em">
-            <button id="toDate" title="ステータスIDを日時に変換します">ID to Date↓</button>
+        <button id="toDate" title="ステータスIDを日時に変換します">ID to Date↓</button>
         <button id="toId" title="日時をステータスIDに変換します">Date to ID↑</button>
         <button id="goNow" title="現在時刻を設定して変換します">現在時刻</button>
     </div>
 
     <div style="margin:1em 0em">
-            <dl>
+        <dl>
             <dt>日時(たぶん地方時):</dt>
-            <dd><input type="text" id="dateStr" style="width:60%"></dd>
+            <dd>
+                <input type="text" id="datePart" style="width:120px">
+                <input type="text" id="timePart" style="width:120px">
+            </dd>
         </dl>
     </div>
     <p>※ 厳密には IDから日時部分を抽出 と 日時からTimelineフィルタで使えるような値を生成 になる。<br>
@@ -82,19 +88,22 @@
 <script>
     var MstDateId = MstDateId || {};
     (function(){
+
+        var B_16 = 2 ^ 16;
+
         MstDateId.idToDate = function(id) {
             // UNIX Time (ms) = ID >> 16
 
-            return new Date(id / 65536);
+            return new Date(id / B_16);
         };
 
         MstDateId.dateToId = function(date) {
             // ID = UNIX Time (ms) << 16
 
             // << 16
-            var id = date.getTime() * 65536;
+            var id = date.getTime() * B_16;
             // & 0xFFFF
-            id = parseInt(id / 65536) * 65536;
+            id = parseInt(id / B_16) * B_16;
             return id;
         };
 
@@ -125,12 +134,14 @@
         var toDate = function(){
             var id = $('#mstid').val();
             var dt = MstDateId.idToDate(id);
-            $('#dateStr').val(MstDateId.formatDate(dt));
+            $('#datePart').val(MstDateId.formatDate(dt, 'YYYY/mm/dd'));
+            $('#timePart').val(MstDateId.formatDate(dt, 'HH:MM:SS'));
+            
             $('#idInHex').text(MstDateId.formatHex(id));
         };
 
         var toId = function(){
-            var dateStr =  $('#dateStr').val();
+            var dateStr =  $('#datePart').val() + ' ' + $('#timePart').val();
             var date = MstDateId.parseDate(dateStr);
             var id = MstDateId.dateToId(date);
             $('#mstid').val(id);
@@ -158,6 +169,9 @@
             $('button#goNow').bind('click', function() {
                 goNow();
             });
+            
+            $.datepicker.setDefaults( $.datepicker.regional[ "ja" ] );
+            $('#datePart').datepicker({ showButtonPanel: true });
 
             // Play
             //setInterval(function(){
