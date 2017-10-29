@@ -122,14 +122,20 @@
 
         MstDateId.parseDate = function(str) {
             var date;
-            var m = str.match(/^(\d+)[/](\d+)[/](\d+)\s+(\d+)[:](\d+)[:](\d+)(?:[.](\d{3}))?/);
+            var m = str.match(/^(\d+)[/](\d+)[/](\d+)\s+(\d+)[:](\d+)[:](\d+)(?:[.](\d{1,3}))?/);
+            var f;
 
             if (m) {
                 date = new Date(m[1]+'/'+m[2]+'/'+m[3] + ' ' + m[4]+':'+m[5]+':'+m[6]);
-                if (m[7]) date = new Date(date.getTime() + Number(m[7]));
+                if (m[7]) {
+                    f = Number(m[7]);
+                    if (f < 10)  f *= 100;
+                    if (f < 100) f *= 10;
+                    date = new Date(date.getTime() + f);
+                }
             }
             else {
-                date = new Date(str);
+                throw "invalid date format: " + str;
             }
 
             return date;
@@ -144,6 +150,10 @@
     (function() {
 
         var toDate = function() {
+            $('#datePart').val('');
+            $('#timePart').val('');
+            $('#idInHex').text('');
+
             var id = $('#mstid').val();
             var dt = MstDateId.idToDate(id);
             $('#datePart').val(MstDateId.formatDate(dt, 'YYYY/mm/dd'));
@@ -153,6 +163,8 @@
         };
 
         var toId = function() {
+            $('#mstid').val('');
+
             var dateStr =  $('#datePart').val() + ' ' + $('#timePart').val();
             var date = MstDateId.parseDate(dateStr);
             var id = MstDateId.dateToId(date);
@@ -165,23 +177,50 @@
             toDate();
         };
 
+        var normilizeID = function() {
+            var s = $('#mstid').val();
+            if (s.match(/[/](\d+)$/)) {
+                var id = RegExp.$1;
+                $('#mstid').val(id);
+            }
+        }
+
         $(function() {
             // fill initial values
-            goNow();
+            //goNow();
 
             // bind events
-            $('button#toDate').bind('click', function() {
+            $('button#toDate').on('click', function() {
                 toDate();
             });
 
-            $('button#toId').bind('click', function() {
+            $('button#toId').on('click', function() {
                 toId();
             });
 
-            $('button#goNow').bind('click', function() {
+            $('button#goNow').on('click', function() {
                 goNow();
             });
-            
+
+            // auto id to date
+            $('#mstid').on('keyup', function() {
+                normilizeID();
+                toDate();
+            });
+
+            // auto date to id
+            $('#datePart').on('keyup', function() {
+                toId();
+            });
+            $('#datePart').on('change', function() {
+                toId();
+            });
+            $('#timePart').on('keyup', function() {
+                toId();
+            });
+
+            $('#mstid').on('focus', function() { $(this).select(); } );
+
             $.datepicker.setDefaults( $.datepicker.regional[ "ja" ] );
             $('#datePart').datepicker({ showButtonPanel: true });
 
