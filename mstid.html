@@ -89,7 +89,7 @@
     var MstDateId = MstDateId || {};
     (function(){
 
-        var B_16 = 2 ^ 16;
+        var B_16 = Math.pow(2, 16);
 
         MstDateId.idToDate = function(id) {
             // UNIX Time (ms) = ID >> 16
