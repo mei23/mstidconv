@@ -115,12 +115,24 @@
                 .replace(/dd/g, ('0' + date.getDate()).slice(-2))
                 .replace(/HH/g, ('0' + date.getHours()).slice(-2))
                 .replace(/MM/g, ('0' + date.getMinutes()).slice(-2))
-                .replace(/SS/g, ('0' + date.getSeconds()).slice(-2));
+                .replace(/SS/g, ('0' + date.getSeconds()).slice(-2))
+                .replace(/fff/g, ('00' + date.getMilliseconds()).slice(-3));
             return str;
         };
 
         MstDateId.parseDate = function(str) {
-            return new Date(str);
+            var date;
+            var m = str.match(/^(\d+)[/](\d+)[/](\d+)\s+(\d+)[:](\d+)[:](\d+)(?:[.](\d{3}))?/);
+
+            if (m) {
+                date = new Date(m[1]+'/'+m[2]+'/'+m[3] + ' ' + m[4]+':'+m[5]+':'+m[6]);
+                if (m[7]) date = new Date(date.getTime() + Number(m[7]));
+            }
+            else {
+                date = new Date(str);
+            }
+
+            return date;
         };
 
         MstDateId.formatHex = function(i) {
@@ -135,7 +147,7 @@
             var id = $('#mstid').val();
             var dt = MstDateId.idToDate(id);
             $('#datePart').val(MstDateId.formatDate(dt, 'YYYY/mm/dd'));
-            $('#timePart').val(MstDateId.formatDate(dt, 'HH:MM:SS'));
+            $('#timePart').val(MstDateId.formatDate(dt, 'HH:MM:SS.fff'));
             
             $('#idInHex').text(MstDateId.formatHex(id));
         };
